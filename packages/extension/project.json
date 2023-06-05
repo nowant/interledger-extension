@@ -1,0 +1,58 @@
+{
+  "name": "extension",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/extension/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/extension",
+        "main": "packages/extension/src/index.ts",
+        "additionalEntryPoints": [
+          "packages/extension/src/background.ts",
+          "packages/extension/src/content.ts"
+        ],
+        "tsConfig": "packages/extension/tsconfig.lib.json",
+        "assets": [
+          "packages/extension/*.md",
+          {
+            "input": "packages/extension/src/assets",
+            "glob": "**/*",
+            "output": "/assets/"
+          },
+          "packages/extension/manifest.json"
+        ],
+        "generatePackageJson": true
+      },
+      "configurations": {
+        "production": {
+          "minify": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/extension/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/extension/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}
